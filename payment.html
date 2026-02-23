@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<meta charset="UTF-8">
+<title>Payment</title>
+
+<link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+
+<!-- HEADER -->
+
+<div class="mini-hero">
+
+<div class="mini-header">
+
+<h2>Payment</h2>
+
+<a href="index.html" class="home-btn">
+Home
+</a>
+
+</div>
+
+</div>
+
+
+
+<div class="results-container">
+
+
+<!-- NO BOOKING MESSAGE -->
+
+<div id="noBooking"
+style="text-align:center;margin-top:60px;display:none">
+
+<h2>No booking found</h2>
+
+<p>Please search and select a flight first</p>
+
+<br>
+
+<a href="index.html" class="home-btn">
+Search Flights
+</a>
+
+</div>
+
+
+
+<!-- PAYMENT BOX -->
+
+<div id="paymentBox" style="display:none">
+
+
+<h2 style="text-align:center">
+Payment Details
+</h2>
+
+
+<div class="flight-card" style="display:block">
+
+
+<p><b>Route:</b> <span id="route"></span></p>
+
+<p><b>Flight:</b> <span id="flight"></span></p>
+
+<p><b>Date:</b> <span id="date"></span></p>
+
+<p><b>Passengers:</b> <span id="passengers"></span></p>
+
+<p><b>Class:</b> <span id="class"></span></p>
+
+<p><b>Total Price:</b> ₹<span id="price"></span></p>
+
+<p style="color:gray;font-size:14px">
+(Price includes taxes and service charges)
+</p>
+
+
+<hr>
+
+
+<h3>Select Payment Method</h3>
+
+
+<label>
+<input type="radio" name="payment" value="UPI">
+UPI
+</label>
+
+<br><br>
+
+<label>
+<input type="radio" name="payment" value="Card">
+Credit/Debit Card
+</label>
+
+<br><br>
+
+<label>
+<input type="radio" name="payment" value="NetBanking">
+Net Banking
+</label>
+
+<br><br>
+
+
+<button onclick="payNow()">
+Pay Now
+</button>
+
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+
+<script>
+
+
+let booking =
+JSON.parse(localStorage.getItem("bookingData"));
+
+
+/* No booking */
+
+if(!booking){
+
+document.getElementById("noBooking").style.display="block";
+
+}
+
+
+/* Show payment */
+
+else{
+
+document.getElementById("paymentBox").style.display="block";
+
+
+document.getElementById("route").innerHTML=
+booking.route;
+
+document.getElementById("flight").innerHTML=
+booking.flight;
+
+document.getElementById("date").innerHTML=
+booking.date;
+
+document.getElementById("passengers").innerHTML=
+booking.passengers;
+
+document.getElementById("class").innerHTML=
+booking.class;
+
+document.getElementById("price").innerHTML=
+booking.price;
+
+}
+
+
+
+/* Payment */
+
+function payNow(){
+
+let method =
+document.querySelector("input[name='payment']:checked");
+
+
+if(!method){
+
+alert("Select payment method");
+
+return;
+
+}
+
+
+/* Save payment */
+
+localStorage.setItem("paymentDone","yes");
+
+
+alert("Payment Successful");
+
+
+window.location="confirmation.html";
+
+}
+
+
+</script>
+
+
+</body>
+</html>

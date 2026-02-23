@@ -1,0 +1,389 @@
+/* RESET */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f4f6f9;
+}
+
+
+/* ================= HERO SECTION ================= */
+
+.hero {
+    background: linear-gradient(to right, #1e3c72, #2a5298);
+    padding: 10px 60px 20px 60px;
+    color: white;
+}
+
+/* Top Row */
+.hero-top {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+}
+
+/* Logo */
+.logo-container img {
+    width:90px;
+    height:90px;
+    border-radius:50%;
+    object-fit:cover;
+}
+
+/* Login Signup Area */
+.auth-links{
+    min-width:150px;
+    text-align:right;
+}
+
+.auth-links a {
+    margin-left:20px;
+    text-decoration:none;
+    font-weight:bold;
+}
+
+.login-link{
+    color:white;
+}
+
+.signup-btn{
+    background:white;
+    color:#2a5298;
+    padding:6px 14px;
+    border-radius:6px;
+}
+
+.signup-btn:hover{
+    background:#f0f0f0;
+}
+
+
+/* Center Text */
+
+.hero-content{
+    text-align:center;
+    margin-top:20px;
+}
+
+.hero-content h1{
+    font-size:36px;
+    margin-bottom:10px;
+}
+
+.hero-content p{
+    font-size:16px;
+}
+
+
+
+/* ================= NAVIGATION ================= */
+
+nav{
+    background:white;
+    padding:15px;
+    text-align:center;
+    box-shadow:0 2px 6px rgba(0,0,0,0.1);
+}
+
+nav a{
+    text-decoration:none;
+    margin:0 15px;
+    font-weight:bold;
+    color:#333;
+}
+
+nav a:hover{
+    color:#2a5298;
+}
+
+
+
+/* ================= SEARCH SECTION ================= */
+
+.search-section{
+
+    max-width:600px;
+
+    margin:60px auto;
+
+    background:white;
+
+    padding:40px;
+
+    border-radius:12px;
+
+    box-shadow:0 8px 25px rgba(0,0,0,0.1);
+
+}
+
+.search-section h2{
+    text-align:center;
+    margin-bottom:25px;
+}
+
+.search-section label{
+    font-weight:bold;
+    display:block;
+    margin-top:15px;
+}
+
+.search-section select,
+.search-section input{
+
+    width:100%;
+    padding:10px;
+
+    border-radius:6px;
+
+    border:1px solid #ccc;
+
+    margin-top:5px;
+
+}
+
+
+/* Search Button */
+
+.search-section button{
+
+    width:100%;
+
+    padding:14px;
+
+    margin-top:20px;
+
+    background-color:#2a5298;
+
+    color:white;
+
+    border:none;
+
+    border-radius:6px;
+
+    font-size:16px;
+
+    cursor:pointer;
+
+}
+
+.search-section button:hover{
+
+    background-color:#1e3c72;
+
+}
+
+
+
+/* ================= FOOTER ================= */
+
+footer{
+
+    background-color:#1e3c72;
+
+    color:white;
+
+    text-align:center;
+
+    padding:15px;
+
+}
+
+
+
+/* ================= LOGIN & SIGNUP ================= */
+
+.auth-container{
+
+    max-width:420px;
+
+    margin:80px auto;
+
+    background:white;
+
+    padding:40px;
+
+    border-radius:12px;
+
+    box-shadow:0 10px 25px rgba(0,0,0,0.1);
+
+}
+
+.auth-container h2{
+    text-align:center;
+    margin-bottom:30px;
+}
+
+.auth-container label{
+    font-weight:bold;
+}
+
+.auth-container input{
+
+    width:100%;
+
+    padding:12px;
+
+    margin-bottom:20px;
+
+    border-radius:6px;
+
+    border:1px solid #ccc;
+
+}
+
+.auth-container button{
+
+    width:100%;
+
+    padding:14px;
+
+    background-color:#2a5298;
+
+    color:white;
+
+    border:none;
+
+    border-radius:6px;
+
+    font-size:16px;
+
+}
+
+.auth-container button:hover{
+
+    background-color:#1e3c72;
+
+}
+
+.auth-switch{
+
+    text-align:center;
+
+    margin-top:15px;
+
+}
+
+
+
+/* ================= MINI HEADER ================= */
+
+.mini-hero{
+
+    background:linear-gradient(to right,#1e3c72,#2a5298);
+
+    padding:15px 40px;
+
+}
+
+.mini-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    color:white;
+
+}
+
+.mini-header h2{
+
+    margin:0;
+
+    font-size:20px;
+
+}
+
+.home-btn{
+
+    text-decoration:none;
+
+    background:white;
+
+    color:#2a5298;
+
+    padding:6px 14px;
+
+    border-radius:6px;
+
+    font-weight:bold;
+
+}
+
+.home-btn:hover{
+
+    background:#f0f0f0;
+
+}
+
+
+
+/* ================= BOOKING PAGE ================= */
+
+.results-container{
+
+    max-width:800px;
+
+    margin:60px auto;
+
+}
+
+
+.search-summary{
+
+    text-align:center;
+
+    margin-bottom:30px;
+
+}
+
+
+.flight-card{
+
+    background:white;
+
+    padding:25px;
+
+    margin-bottom:20px;
+
+    border-radius:10px;
+
+    box-shadow:0 6px 15px rgba(0,0,0,0.1);
+
+}
+
+
+.price{
+
+    font-size:20px;
+
+    font-weight:bold;
+
+    color:#2a5298;
+
+}
+
+
+.book-btn{
+
+    background-color:#2a5298;
+
+    color:white;
+
+    padding:10px 20px;
+
+    border-radius:6px;
+
+    border:none;
+
+    cursor:pointer;
+
+    margin-top:10px;
+
+}
+
+.book-btn:hover{
+
+    background-color:#1e3c72;
+
+}

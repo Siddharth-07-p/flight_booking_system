@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<meta charset="UTF-8">
+<title>Available Flights</title>
+
+<link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+
+<!-- HEADER -->
+
+<div class="mini-hero">
+
+<div class="mini-header">
+
+<h2>Available Flights</h2>
+
+<a href="index.html" class="home-btn">
+Home
+</a>
+
+</div>
+
+</div>
+
+
+
+<div class="results-container">
+
+
+<!-- MESSAGE IF NO SEARCH -->
+
+<div id="noSearch" style="display:none; text-align:center; margin-top:80px;">
+
+<h2>Please search flights first</h2>
+
+<br>
+
+<a href="index.html" class="home-btn">
+Go to Home
+</a>
+
+</div>
+
+
+
+<!-- FLIGHT RESULTS -->
+
+<div id="flightResults" style="display:none;">
+
+
+<div class="search-summary">
+
+<h3 id="route"></h3>
+
+<p id="details"></p>
+
+</div>
+
+
+<h2 style="text-align:center;">
+Flights Found
+</h2>
+
+
+
+<!-- Flight 1 -->
+
+<div class="flight-card">
+
+<div>
+
+<h3>Air India AI-203</h3>
+
+<p id="route1"></p>
+
+<p>Departure: 10:30 AM</p>
+
+<p>Arrival: 12:30 PM</p>
+
+<p class="price">₹4500</p>
+
+</div>
+
+
+<button class="book-btn"
+
+onclick="selectFlight('Air India AI-203','10:30 AM','12:30 PM','4500')">
+
+Select Flight
+
+</button>
+
+</div>
+
+
+
+<!-- Flight 2 -->
+
+<div class="flight-card">
+
+<div>
+
+<h3>Indigo 6E-412</h3>
+
+<p id="route2"></p>
+
+<p>Departure: 2:00 PM</p>
+
+<p>Arrival: 4:00 PM</p>
+
+<p class="price">₹4200</p>
+
+</div>
+
+
+<button class="book-btn"
+
+onclick="selectFlight('Indigo 6E-412','2:00 PM','4:00 PM','4200')">
+
+Select Flight
+
+</button>
+
+</div>
+
+
+
+<!-- Flight 3 -->
+
+<div class="flight-card">
+
+<div>
+
+<h3>Vistara UK-822</h3>
+
+<p id="route3"></p>
+
+<p>Departure: 6:00 PM</p>
+
+<p>Arrival: 8:00 PM</p>
+
+<p class="price">₹5000</p>
+
+</div>
+
+
+<button class="book-btn"
+
+onclick="selectFlight('Vistara UK-822','6:00 PM','8:00 PM','5000')">
+
+Select Flight
+
+</button>
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+
+<script>
+
+
+/* GET SEARCH DATA */
+
+let data = JSON.parse(localStorage.getItem("searchData"));
+
+
+
+/* IF NO SEARCH */
+
+if(!data){
+
+document.getElementById("noSearch").style.display="block";
+
+document.getElementById("flightResults").style.display="none";
+
+}
+
+
+
+/* IF SEARCH EXISTS */
+
+else{
+
+document.getElementById("flightResults").style.display="block";
+
+document.getElementById("noSearch").style.display="none";
+
+
+document.getElementById("route").innerHTML =
+data.from+" → "+data.to;
+
+
+document.getElementById("details").innerHTML =
+"Date: "+data.date+
+" | Passengers: "+data.passengers+
+" | Class: "+data.class;
+
+
+document.getElementById("route1").innerHTML =
+data.from+" → "+data.to;
+
+document.getElementById("route2").innerHTML =
+data.from+" → "+data.to;
+
+document.getElementById("route3").innerHTML =
+data.from+" → "+data.to;
+
+}
+
+/* Select flight*/
+
+function selectFlight(name,dep,arr,price){
+
+let user = localStorage.getItem("loggedUser");
+
+if(!user){
+
+alert("Please login before booking");
+window.location="login.html";
+return;
+
+}
+
+let data = JSON.parse(localStorage.getItem("searchData"));
+
+let passengers = data.passengers;
+
+let basePrice = price;
+
+
+/* Class pricing */
+
+let multiplier = 1;
+
+if(data.class=="Business")
+multiplier=1.5;
+
+if(data.class=="First Class")
+multiplier=2;
+
+
+let totalPrice = basePrice * multiplier * passengers;
+
+
+let bookingData={
+
+route:data.from+" → "+data.to,
+date:data.date,
+flight:name,
+departure:dep,
+arrival:arr,
+passengers:passengers,
+class:data.class,
+price:totalPrice
+
+};
+
+localStorage.setItem("bookingData",JSON.stringify(bookingData));
+
+window.location="payment.html";
+
+}
+</script>
+
+
+</body>
+</html>

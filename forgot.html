@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Forgot Password</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<!-- HEADER -->
+<div class="mini-hero">
+<div class="mini-header">
+
+<h2>Forgot Password</h2>
+
+<a href="login.html" class="home-btn">
+Back
+</a>
+
+</div>
+</div>
+
+
+<!-- RECOVERY CARD -->
+<div class="auth-container">
+
+<h2>Recover Password</h2>
+
+
+<label>Enter Email</label>
+
+<input type="email" id="email" placeholder="Enter your email" required>
+
+
+<br><br>
+
+
+<button onclick="showPassword()">
+Show Password
+</button>
+
+
+<br><br>
+
+
+<p id="result" style="font-weight:bold;"></p>
+
+
+</div>
+
+
+
+<script>
+
+function showPassword(){
+
+let emailInput =
+document.getElementById("email").value.trim();
+
+let user =
+JSON.parse(localStorage.getItem("userData"));
+
+
+if(!user){
+
+document.getElementById("result").innerHTML =
+"No account found. Please Sign Up.";
+
+return;
+
+}
+
+
+if(emailInput === user.email){
+
+document.getElementById("result").innerHTML =
+"Your Password: " + user.password;
+
+}
+else{
+
+document.getElementById("result").innerHTML =
+"Email not found";
+
+}
+
+}
+
+</script>
+
+
+</body>
+</html>

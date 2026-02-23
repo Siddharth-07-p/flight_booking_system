@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Flight Booking System</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<!-- HERO -->
+<div class="hero">
+
+<div class="hero-top">
+
+<div class="logo-container">
+<img src="logo.jpg">
+</div>
+
+<div class="auth-links" id="authArea">
+<a href="login.html" class="login-link">Login</a>
+<a href="signup.html" class="signup-btn">Sign Up</a>
+</div>
+
+</div>
+
+<div class="hero-content">
+<h1>Book Your Journey Today</h1>
+<p>Fast. Easy. Reliable Flight Booking.</p>
+</div>
+
+</div>
+
+
+<!-- NAV -->
+<nav>
+<a href="index.html">Home</a>
+<a href="booking.html">Booking</a>
+<a href="confirmation.html">Confirmation</a>
+</nav>
+
+
+<!-- SEARCH -->
+<section class="search-section">
+
+<h2>Search Flights</h2>
+
+<form id="searchForm">
+
+<label>From:</label>
+<select id="fromCity">
+<option value="">Select City</option>
+<option>Chennai</option>
+<option>Bangalore</option>
+<option>Hyderabad</option>
+<option>Mumbai</option>
+<option>Delhi</option>
+</select>
+
+<label>To:</label>
+<select id="toCity">
+<option value="">Select City</option>
+<option>Mumbai</option>
+<option>Delhi</option>
+<option>Bangalore</option>
+<option>Chennai</option>
+<option>Hyderabad</option>
+</select>
+
+<label>Departure Date:</label>
+<input type="date" id="travelDate">
+
+<label>Passengers:</label>
+
+<input type="number" id="passengers" placeholder="Enter number of passengers" min="1" max="10">
+
+<label>Class:</label>
+<select id="flightClass">
+<option value="">Select</option>
+<option>Economy</option>
+<option>Business</option>
+<option>First Class</option>
+</select>
+
+<button type="submit">
+Search Flights
+</button>
+
+</form>
+
+</section>
+
+
+<footer>
+<p>© 2026 Flight Booking System</p>
+</footer>
+
+
+<script>
+localStorage.removeItem("searchData");
+localStorage.removeItem("bookingData");
+let today=new Date().toISOString().split("T")[0];
+document.getElementById("travelDate").min=today;
+
+
+/* LOGIN STATUS */
+
+let user=localStorage.getItem("loggedUser");
+
+if(user){
+document.getElementById("authArea").innerHTML=
+"<span style='color:white;font-weight:bold;margin-right:15px'>"+user+"</span>"+
+"<button onclick='logout()' class='signup-btn'>Logout</button>";
+}
+
+function logout(){
+localStorage.removeItem("loggedUser");
+location.reload();
+}
+
+
+/* SEARCH */
+
+document.getElementById("searchForm").addEventListener("submit",function(e){
+
+e.preventDefault();
+
+let from=document.getElementById("fromCity").value;
+let to=document.getElementById("toCity").value;
+let date=document.getElementById("travelDate").value;
+let passengers=document.getElementById("passengers").value;
+let flightClass=document.getElementById("flightClass").value;
+
+if(from===""||to===""||date===""||passengers===""||flightClass===""){
+alert("Fill all fields");
+return;
+}
+
+if(from===to){
+alert("From and To cannot be same");
+return;
+}
+
+let searchData={
+from:from,
+to:to,
+date:date,
+passengers:passengers,
+class:flightClass
+};
+
+localStorage.setItem("searchData",JSON.stringify(searchData));
+
+window.location="booking.html";
+
+});
+
+</script>
+
+</body>
+</html>

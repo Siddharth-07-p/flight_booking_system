@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Booking Confirmation</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<!-- HEADER -->
+<div class="mini-hero">
+<div class="mini-header">
+
+<h2>Booking Confirmation</h2>
+
+<a href="index.html" class="home-btn">
+Home
+</a>
+
+</div>
+</div>
+
+
+<div class="results-container">
+
+<!-- No Booking Message -->
+
+<div id="noBooking" style="text-align:center;margin-top:50px;display:none">
+
+<h2>No Booking Found</h2>
+
+<p>Please complete payment first</p>
+
+<a href="index.html" class="home-btn">
+Search Flights
+</a>
+
+</div>
+
+
+
+<!-- Booking Details -->
+
+<div id="bookingDetails" style="display:none">
+
+<h2 style="text-align:center">
+Booking Confirmed ✓
+</h2>
+
+
+<div class="flight-card">
+
+<p><b>Route:</b> <span id="route"></span></p>
+
+<p><b>Date:</b> <span id="date"></span></p>
+
+<p><b>Flight:</b> <span id="flight"></span></p>
+
+<p><b>Departure:</b> <span id="departure"></span></p>
+
+<p><b>Arrival:</b> <span id="arrival"></span></p>
+
+<p><b>Passengers:</b> <span id="passengers"></span></p>
+
+<p><b>Class:</b> <span id="class"></span></p>
+
+<p><b>Total Price:</b> ₹<span id="price"></span></p>
+
+<p><b>Booking ID:</b> <span id="bookingID"></span></p>
+
+<br>
+
+
+
+<button onclick="window.print()" class="book-btn">
+Print Ticket
+</button>
+
+</div>
+
+</div>
+
+
+</div>
+
+
+
+<script>
+
+let booking = JSON.parse(localStorage.getItem("bookingData"));
+
+if(!booking){
+
+document.getElementById("noBooking").style.display="block";
+
+}
+else{
+
+document.getElementById("bookingDetails").style.display="block";
+
+document.getElementById("route").innerHTML = booking.route;
+document.getElementById("date").innerHTML = booking.date;
+document.getElementById("flight").innerHTML = booking.flight;
+document.getElementById("departure").innerHTML = booking.departure;
+document.getElementById("arrival").innerHTML = booking.arrival;
+document.getElementById("passengers").innerHTML = booking.passengers;
+document.getElementById("class").innerHTML = booking.class;
+document.getElementById("price").innerHTML = booking.price;
+
+
+/* Booking ID */
+
+let id = "FB" + Math.floor(Math.random()*100000);
+
+document.getElementById("bookingID").innerHTML = id;
+
+
+}
+
+</script>
+
+
+</body>
+</html>
