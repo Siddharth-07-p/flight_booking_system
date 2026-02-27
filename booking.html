@@ -1,279 +1,281 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-
-<meta charset="UTF-8">
-<title>Available Flights</title>
-
-<link rel="stylesheet" href="style.css">
-
+    <meta charset="UTF-8">
+    <title>Available Flights</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
+    <div class="mini-hero">
+
+        <div class="mini-header">
+            <h2>Available Flights</h2>
+
+            <nav class="main-nav">
+                <a href="index.html">Home</a>
+                <a href="booking.html" class="active">Booking</a>
+                <a href="confirmation.html">Confirmation</a>
+            </nav>
+        </div>
+
+    </div>
+
+    <div class="booking-page-container">
+
+        <!-- Sidebar Filters -->
+        <aside class="filters-sidebar">
+            <h3>Filters</h3>
+
+            <div class="filter-group">
+                <h4>Stops</h4>
+                <label class="filter-label"><input type="checkbox" id="filterNonStop" value="0"
+                        onchange="applyFilters()"> Non-Stop</label>
+                <label class="filter-label"><input type="checkbox" id="filter1Stop" value="1" onchange="applyFilters()">
+                    1 Stop</label>
+            </div>
+
+            <div class="filter-group">
+                <h4>Departure Time</h4>
+                <label class="filter-label"><input type="checkbox" id="filterMorning" value="Morning"
+                        onchange="applyFilters()"> Morning (06:00 - 12:00)</label>
+                <label class="filter-label"><input type="checkbox" id="filterAfternoon" value="Afternoon"
+                        onchange="applyFilters()"> Afternoon (12:00 - 18:00)</label>
+                <label class="filter-label"><input type="checkbox" id="filterEvening" value="Evening"
+                        onchange="applyFilters()"> Evening (18:00 - 00:00)</label>
+            </div>
 
+            <div class="filter-group">
+                <h4>Airlines</h4>
+                <label class="filter-label"><input type="checkbox" id="filterAirIndia" value="Air India"
+                        onchange="applyFilters()" checked> Air India</label>
+                <label class="filter-label"><input type="checkbox" id="filterIndiGo" value="IndiGo"
+                        onchange="applyFilters()" checked> IndiGo</label>
+                <label class="filter-label"><input type="checkbox" id="filterVistara" value="Vistara"
+                        onchange="applyFilters()" checked> Vistara</label>
+            </div>
+        </aside>
 
-<!-- HEADER -->
+        <!-- Main Results -->
+        <main class="results-content">
 
-<div class="mini-hero">
+            <div id="noSearch" style="display:none; text-align:center; margin-top:40px;">
+                <h2>Please search flights first</h2>
+                <br>
+                <a href="index.html" class="home-btn" style="display:inline-block;">Go to Home</a>
+            </div>
 
-<div class="mini-header">
+            <div id="flightResults" style="display:none;">
 
-<h2>Available Flights</h2>
+                <!-- Search Summary Box -->
+                <div class="search-summary">
+                    <div>
+                        <h3 id="route"></h3>
+                        <p id="details"></p>
+                    </div>
+                </div>
 
-<a href="index.html" class="home-btn">
-Home
-</a>
+                <h2 class="flights-count" id="flightsCountTitle">Searching for Flights...</h2>
 
-</div>
+                <!-- Dynamic flights will be wrapped injected here -->
+                <div id="flightsContainer"></div>
 
-</div>
+            </div>
+        </main>
+    </div>
 
+    <script>
+        // --- 1. MOCK DATA LIBRARY ---
+        // A realistic spread of flights matching the filter options (Air India, IndiGo, Vistara / Morning, Afternoon, Evening / Non-stop, 1 Stop)
+        const mockFlights = [
+            { id: "AI-203", airline: "Air India", dep: "10:30", arr: "12:30", duration: "2h 00m", stops: 0, price: 4500 },
+            { id: "6E-412", airline: "IndiGo", dep: "14:00", arr: "16:00", duration: "2h 00m", stops: 0, price: 4200 },
+            { id: "UK-822", airline: "Vistara", dep: "18:00", arr: "20:00", duration: "2h 00m", stops: 0, price: 5000 },
+            { id: "AI-881", airline: "Air India", dep: "07:15", arr: "10:45", duration: "3h 30m", stops: 1, price: 3800 },
+            { id: "6E-901", airline: "IndiGo", dep: "22:10", arr: "00:30", duration: "2h 20m", stops: 0, price: 3500 },
+            { id: "UK-112", airline: "Vistara", dep: "15:45", arr: "19:00", duration: "3h 15m", stops: 1, price: 4800 },
+            { id: "6E-222", airline: "IndiGo", dep: "08:00", arr: "10:15", duration: "2h 15m", stops: 0, price: 4100 }
+        ];
+        let data = JSON.parse(localStorage.getItem("searchData"));
 
+        if (!data) {
+            document.getElementById("noSearch").style.display = "block";
 
-<div class="results-container">
+            document.getElementById("flightResults").style.display = "none";
+        }
 
+        else {
+
+            document.getElementById("flightResults").style.display = "block";
+
+            document.getElementById("noSearch").style.display = "none";
 
-<!-- MESSAGE IF NO SEARCH -->
+            document.getElementById("route").innerHTML = data.from + " → " + data.to;
 
-<div id="noSearch" style="display:none; text-align:center; margin-top:80px;">
+            let tripInfo = data.tripType === "Round Trip" ? data.date + " to " + data.returnDate : data.date;
 
-<h2>Please search flights first</h2>
+            // Format special fares if any
+            let faresInfo = data.specialFares && data.specialFares.length > 0 ? " | Special: " + data.specialFares.join(", ") : "";
 
-<br>
+            document.getElementById("details").innerHTML = "Date: " + tripInfo + " | Passengers: " + data.passengers +
+                " | Class: " + data.class + faresInfo;
 
-<a href="index.html" class="home-btn">
-Go to Home
-</a>
+        }
 
-</div>
+        function selectFlight(name, dep, arr, price) {
 
+            let user = localStorage.getItem("loggedUser");
 
+            if (!user) {
+                alert("Please login before booking");
+                window.location = "login.html";
+                return;
+            }
 
-<!-- FLIGHT RESULTS -->
+            let data = JSON.parse(localStorage.getItem("searchData"));
 
-<div id="flightResults" style="display:none;">
+            let passengers = data.passengers;
 
+            let basePrice = price;
+
 
-<div class="search-summary">
+            let multiplier = 1;
+
+            if (data.class == "Business")
+                multiplier = 1.5;
 
-<h3 id="route"></h3>
-
-<p id="details"></p>
-
-</div>
-
-
-<h2 style="text-align:center;">
-Flights Found
-</h2>
-
-
-
-<!-- Flight 1 -->
-
-<div class="flight-card">
-
-<div>
-
-<h3>Air India AI-203</h3>
-
-<p id="route1"></p>
-
-<p>Departure: 10:30 AM</p>
-
-<p>Arrival: 12:30 PM</p>
-
-<p class="price">₹4500</p>
-
-</div>
-
-
-<button class="book-btn"
-
-onclick="selectFlight('Air India AI-203','10:30 AM','12:30 PM','4500')">
-
-Select Flight
-
-</button>
-
-</div>
-
-
-
-<!-- Flight 2 -->
-
-<div class="flight-card">
-
-<div>
-
-<h3>Indigo 6E-412</h3>
-
-<p id="route2"></p>
-
-<p>Departure: 2:00 PM</p>
-
-<p>Arrival: 4:00 PM</p>
-
-<p class="price">₹4200</p>
-
-</div>
-
-
-<button class="book-btn"
-
-onclick="selectFlight('Indigo 6E-412','2:00 PM','4:00 PM','4200')">
-
-Select Flight
-
-</button>
-
-</div>
-
-
-
-<!-- Flight 3 -->
-
-<div class="flight-card">
-
-<div>
-
-<h3>Vistara UK-822</h3>
-
-<p id="route3"></p>
-
-<p>Departure: 6:00 PM</p>
-
-<p>Arrival: 8:00 PM</p>
-
-<p class="price">₹5000</p>
-
-</div>
-
-
-<button class="book-btn"
-
-onclick="selectFlight('Vistara UK-822','6:00 PM','8:00 PM','5000')">
-
-Select Flight
-
-</button>
-
-</div>
-
-
-</div>
-
-
-</div>
-
-
-
-<script>
-
-
-/* GET SEARCH DATA */
-
-let data = JSON.parse(localStorage.getItem("searchData"));
-
-
-
-/* IF NO SEARCH */
-
-if(!data){
-
-document.getElementById("noSearch").style.display="block";
-
-document.getElementById("flightResults").style.display="none";
-
-}
-
-
-
-/* IF SEARCH EXISTS */
-
-else{
-
-document.getElementById("flightResults").style.display="block";
-
-document.getElementById("noSearch").style.display="none";
-
-
-document.getElementById("route").innerHTML =
-data.from+" → "+data.to;
-
-
-document.getElementById("details").innerHTML =
-"Date: "+data.date+
-" | Passengers: "+data.passengers+
-" | Class: "+data.class;
-
-
-document.getElementById("route1").innerHTML =
-data.from+" → "+data.to;
-
-document.getElementById("route2").innerHTML =
-data.from+" → "+data.to;
-
-document.getElementById("route3").innerHTML =
-data.from+" → "+data.to;
-
-}
-
-/* Select flight*/
-
-function selectFlight(name,dep,arr,price){
-
-let user = localStorage.getItem("loggedUser");
-
-if(!user){
-
-alert("Please login before booking");
-window.location="login.html";
-return;
-
-}
-
-let data = JSON.parse(localStorage.getItem("searchData"));
-
-let passengers = data.passengers;
-
-let basePrice = price;
-
-
-/* Class pricing */
-
-let multiplier = 1;
-
-if(data.class=="Business")
-multiplier=1.5;
-
-if(data.class=="First Class")
-multiplier=2;
-
-
-let totalPrice = basePrice * multiplier * passengers;
-
-
-let bookingData={
-
-route:data.from+" → "+data.to,
-date:data.date,
-flight:name,
-departure:dep,
-arrival:arr,
-passengers:passengers,
-class:data.class,
-price:totalPrice
-
-};
-
-localStorage.setItem("bookingData",JSON.stringify(bookingData));
-
-window.location="payment.html";
-
-}
-</script>
-
+            if (data.class == "First Class")
+                multiplier = 2;
+
+            let totalPrice = basePrice * multiplier * passengers;
+
+            let bookingData = {
+
+                route: data.from + " → " + data.to,
+                date: data.date,
+                flight: name,
+                departure: dep,
+                arrival: arr,
+                passengers: passengers,
+                class: data.class,
+                price: totalPrice
+
+            };
+
+            localStorage.setItem("bookingData", JSON.stringify(bookingData));
+            window.location = "payment.html";
+        }
+
+        // --- 2. RENDER ENGINE ---
+        function renderFlights(flightsToRender) {
+            const container = document.getElementById("flightsContainer");
+            const countTitle = document.getElementById("flightsCountTitle");
+
+            container.innerHTML = ""; // Clear existing
+
+            if (flightsToRender.length === 0) {
+                countTitle.innerHTML = "0 Flights Found";
+                container.innerHTML = "<p style='text-align:center; padding: 40px; color:#666;'>No flights match your selected filters. Please try adjusting them.</p>";
+                return;
+            }
+
+            countTitle.innerHTML = flightsToRender.length + " Flights Found";
+
+            flightsToRender.forEach(flight => {
+                // Calculate display price based on passengers and class
+                let multiplier = 1;
+                if (data && data.class === "Business") multiplier = 1.5;
+                if (data && data.class === "First Class") multiplier = 2;
+                let passCount = data ? data.passengers : 1;
+                let finalPrice = flight.price * multiplier * passCount;
+
+                let stopText = flight.stops === 0 ? "Non-stop" : flight.stops + " Stop" + (flight.stops > 1 ? "s" : "");
+
+                let cardHTML = `
+                <div class="flight-card">
+                    <div class="flight-airline">
+                        <h4>${flight.airline}</h4>
+                        <span>${flight.id}</span>
+                    </div>
+
+                    <div class="flight-route">
+                        <div class="time-box">
+                            <h4>${flight.dep}</h4>
+                        </div>
+                        <div class="duration-box">
+                            <p>${flight.duration}</p>
+                            <div class="line"></div>
+                            <span>${stopText}</span>
+                        </div>
+                        <div class="time-box">
+                            <h4>${flight.arr}</h4>
+                        </div>
+                    </div>
+
+                    <div class="flight-price-action">
+                        <span class="price">₹${finalPrice}</span>
+                        <button class="book-btn" onclick="selectFlight('${flight.airline} ${flight.id}', '${flight.dep}', '${flight.arr}', '${flight.price}')">
+                            Book Now
+                        </button>
+                    </div>
+                </div>
+                `;
+                container.innerHTML += cardHTML;
+            });
+        }
+
+        // --- 3. FILTER LOGIC ---
+        function getTimeCategory(timeString) {
+            let hour = parseInt(timeString.split(":")[0]);
+            if (hour >= 6 && hour < 12) return "Morning";
+            if (hour >= 12 && hour < 18) return "Afternoon";
+            return "Evening";
+        }
+
+        function applyFilters() {
+            // 1. Gather selected filter values
+            let selectedStops = [];
+            if (document.getElementById("filterNonStop").checked) selectedStops.push(0);
+            if (document.getElementById("filter1Stop").checked) selectedStops.push(1);
+
+            let selectedTimes = [];
+            if (document.getElementById("filterMorning").checked) selectedTimes.push("Morning");
+            if (document.getElementById("filterAfternoon").checked) selectedTimes.push("Afternoon");
+            if (document.getElementById("filterEvening").checked) selectedTimes.push("Evening");
+
+            let selectedAirlines = [];
+            if (document.getElementById("filterAirIndia").checked) selectedAirlines.push("Air India");
+            if (document.getElementById("filterIndiGo").checked) selectedAirlines.push("IndiGo");
+            if (document.getElementById("filterVistara").checked) selectedAirlines.push("Vistara");
+
+            // 2. Filter the mock array
+            let filteredFlights = mockFlights.filter(flight => {
+                // Check Stops
+                let passStops = selectedStops.length === 0 || selectedStops.includes(flight.stops);
+
+                // Check Time
+                let flightTimeCategory = getTimeCategory(flight.dep);
+                let passTime = selectedTimes.length === 0 || selectedTimes.includes(flightTimeCategory);
+
+                // Check Airlines
+                let passAirline = selectedAirlines.length === 0 || selectedAirlines.includes(flight.airline);
+
+                // Flight must pass all active categories to be shown
+                return passStops && passTime && passAirline;
+            });
+
+            // 3. Render the newly filtered list
+            renderFlights(filteredFlights);
+        }
+
+        // Initial render on page load
+        if (data) {
+            applyFilters();
+        }
+
+    </script>
 
 </body>
+
 </html>
