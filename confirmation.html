@@ -1,125 +1,166 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-<meta charset="UTF-8">
-<title>Booking Confirmation</title>
-<link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <title>Booking Confirmation</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-<!-- HEADER -->
-<div class="mini-hero">
-<div class="mini-header">
 
-<h2>Booking Confirmation</h2>
+    <div class="mini-hero">
 
-<a href="index.html" class="home-btn">
-Home
-</a>
+        <div class="mini-header">
 
-</div>
-</div>
+            <h2>Booking Confirmation</h2>
 
+            <nav class="main-nav">
+                <a href="index.html">Home</a>
+                <a href="booking.html">Booking</a>
+                <a href="confirmation.html" class="active">Confirmation</a>
+            </nav>
 
-<div class="results-container">
+        </div>
 
-<!-- No Booking Message -->
+    </div>
 
-<div id="noBooking" style="text-align:center;margin-top:50px;display:none">
+    <div class="ticket-wrapper">
 
-<h2>No Booking Found</h2>
+        <div id="noBooking" style="text-align:center; padding: 50px; display:none">
+            <h2>No Booking Found</h2>
+            <p>Please complete payment first</p>
+            <br>
+            <a href="index.html" class="home-btn" style="display:inline-block; margin-top:10px;">
+                Search Flights
+            </a>
+        </div>
 
-<p>Please complete payment first</p>
+        <div id="bookingDetails" style="display:none">
 
-<a href="index.html" class="home-btn">
-Search Flights
-</a>
+            <div class="ticket-header">
+                <h2>Booking Confirmed ✓</h2>
+            </div>
 
-</div>
+            <div class="ticket-card-vertical">
+                <div class="ticket-detail-row">
+                    <span class="detail-label">Route</span>
+                    <span class="detail-value" id="route"></span>
+                </div>
+                <div class="ticket-detail-row">
+                    <span class="detail-label">Date</span>
+                    <span class="detail-value" id="date"></span>
+                </div>
+                <div class="ticket-detail-row">
+                    <span class="detail-label">Flight</span>
+                    <span class="detail-value" id="flight"></span>
+                </div>
+                <div class="ticket-detail-row">
+                    <span class="detail-label">Departure</span>
+                    <span class="detail-value" id="departure"></span>
+                </div>
+                <div class="ticket-detail-row">
+                    <span class="detail-label">Arrival</span>
+                    <span class="detail-value" id="arrival"></span>
+                </div>
+                <div class="ticket-detail-row">
+                    <span class="detail-label">Passengers</span>
+                    <span class="detail-value" id="passengers"></span>
+                </div>
+                <div class="ticket-detail-row">
+                    <span class="detail-label">Class</span>
+                    <span class="detail-value" id="class"></span>
+                </div>
 
+                <hr class="ticket-divider">
 
+                <div class="ticket-detail-row highlight-row">
+                    <span class="detail-label">Total Price</span>
+                    <span class="detail-value">₹<span id="price"></span></span>
+                </div>
+                <div class="ticket-detail-row highlight-row">
+                    <span class="detail-label">Booking ID</span>
+                    <span class="detail-value" id="bookingID"></span>
+                </div>
 
-<!-- Booking Details -->
+                <div class="ticket-action-center">
+                    <button onclick="window.print()" class="print-btn">
+                        Print Ticket
+                    </button>
+                </div>
+            </div>
 
-<div id="bookingDetails" style="display:none">
+        </div>
 
-<h2 style="text-align:center">
-Booking Confirmed ✓
-</h2>
-
-
-<div class="flight-card">
-
-<p><b>Route:</b> <span id="route"></span></p>
-
-<p><b>Date:</b> <span id="date"></span></p>
-
-<p><b>Flight:</b> <span id="flight"></span></p>
-
-<p><b>Departure:</b> <span id="departure"></span></p>
-
-<p><b>Arrival:</b> <span id="arrival"></span></p>
-
-<p><b>Passengers:</b> <span id="passengers"></span></p>
-
-<p><b>Class:</b> <span id="class"></span></p>
-
-<p><b>Total Price:</b> ₹<span id="price"></span></p>
-
-<p><b>Booking ID:</b> <span id="bookingID"></span></p>
-
-<br>
-
-
-
-<button onclick="window.print()" class="book-btn">
-Print Ticket
-</button>
-
-</div>
-
-</div>
-
-
-</div>
-
-
-
-<script>
-
-let booking = JSON.parse(localStorage.getItem("bookingData"));
-
-if(!booking){
-
-document.getElementById("noBooking").style.display="block";
-
-}
-else{
-
-document.getElementById("bookingDetails").style.display="block";
-
-document.getElementById("route").innerHTML = booking.route;
-document.getElementById("date").innerHTML = booking.date;
-document.getElementById("flight").innerHTML = booking.flight;
-document.getElementById("departure").innerHTML = booking.departure;
-document.getElementById("arrival").innerHTML = booking.arrival;
-document.getElementById("passengers").innerHTML = booking.passengers;
-document.getElementById("class").innerHTML = booking.class;
-document.getElementById("price").innerHTML = booking.price;
+    </div>
+    <script>
 
 
-/* Booking ID */
-
-let id = "FB" + Math.floor(Math.random()*100000);
-
-document.getElementById("bookingID").innerHTML = id;
+        let booking = JSON.parse(localStorage.getItem("bookingData"));
 
 
-}
+        if (!booking) {
 
-</script>
+            document.getElementById("noBooking").style.display = "block";
 
+        }
+
+
+        else {
+
+            document.getElementById("bookingDetails").style.display = "block";
+
+            document.getElementById("route").innerHTML = booking.route;
+
+            document.getElementById("date").innerHTML = booking.date;
+
+            document.getElementById("flight").innerHTML = booking.flight;
+
+            document.getElementById("departure").innerHTML = booking.departure;
+
+            document.getElementById("arrival").innerHTML = booking.arrival;
+
+            document.getElementById("passengers").innerHTML = booking.passengers;
+
+            document.getElementById("class").innerHTML = booking.class;
+
+            document.getElementById("price").innerHTML = booking.price;
+
+
+
+            let id = "FB" + Math.floor(Math.random() * 100000);
+
+            document.getElementById("bookingID").innerHTML = id;
+
+            // --- NEW LOGIC: Save this booking permanently for the Manage Booking flow ---
+            let allBookingsStr = localStorage.getItem("savedBookings");
+            let allBookings = [];
+            if (allBookingsStr) {
+                allBookings = JSON.parse(allBookingsStr);
+            }
+
+            // Create full record
+            // Note: The provided snippet uses 'pnr', 'bookData', 'searchData', 'payData'.
+            // Adapting to the current script's context: 'id' is the PNR, and 'booking' is the main booking data.
+            let thisBooking = {
+                pnr: id, // Using 'id' as the PNR from the current script
+                flight: booking, // Using the existing 'booking' object as the flight data
+                // search: searchData, // searchData is not available in this context
+                // payment: payData // payData is not available in this context
+            };
+
+            // Check if we already saved this specific trip to prevent duplicates on refresh
+            let alreadySaved = allBookings.find(b => b.pnr === id); // Using 'id' for comparison
+            if (!alreadySaved) {
+                allBookings.push(thisBooking);
+                localStorage.setItem("savedBookings", JSON.stringify(allBookings));
+            }
+
+        }
+
+    </script>
 
 </body>
+
 </html>
