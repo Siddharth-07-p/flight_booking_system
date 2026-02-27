@@ -1,94 +1,93 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-<meta charset="UTF-8">
-<title>Forgot Password</title>
-<link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <title>Forgot Password</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-<!-- HEADER -->
-<div class="mini-hero">
-<div class="mini-header">
 
-<h2>Forgot Password</h2>
+    <body>
 
-<a href="login.html" class="home-btn">
-Back
-</a>
+        <div class="split-layout">
 
-</div>
-</div>
+            <!-- Left Visual Pane -->
+            <div class="split-visual" style="background-image: url('auth-bg.png');">
+                <div class="visual-overlay">
+                    <div class="logo-container" style="margin-bottom: auto;">
+                        <a href="index.html">
+                            <img src="logo.jpg" alt="FlyEasy Logo">
+                        </a>
+                    </div>
+                    <div>
+                        <a href="index.html" style="text-decoration:none;">
+                            <h1 class="visual-logo">Fly Easy</h1>
+                        </a>
+                        <p class="visual-tagline">Begin your journey towards new horizons.</p>
+                    </div>
+                </div>
+            </div>
 
+            <!-- Right Form Pane -->
+            <div class="split-form-container">
+                <div class="form-wrapper">
+                    <a href="login.html" class="back-link">← Back to Login</a>
 
-<!-- RECOVERY CARD -->
-<div class="auth-container">
+                    <h2 class="auth-title">Forgot Password?</h2>
+                    <p class="auth-subtitle">No worries! Enter your email below to retrieve it.</p>
 
-<h2>Recover Password</h2>
+                    <div class="modern-form">
 
+                        <div class="input-group">
+                            <label>Email Address</label>
+                            <input type="email" id="email" placeholder="Enter your email" required>
+                        </div>
 
-<label>Enter Email</label>
+                        <p id="result"
+                            style="font-size: 14px; font-weight: bold; color: #001B94; margin: 5px 0 0 0; min-height: 20px;">
+                        </p>
 
-<input type="email" id="email" placeholder="Enter your email" required>
+                        <button onclick="showPassword()" class="auth-submit-btn" style="margin-top: 20px;">
+                            Show Password
+                        </button>
 
+                    </div>
+                </div>
+            </div>
 
-<br><br>
+        </div>
 
-
-<button onclick="showPassword()">
-Show Password
-</button>
-
-
-<br><br>
-
-
-<p id="result" style="font-weight:bold;"></p>
-
-
-</div>
-
-
-
-<script>
-
-function showPassword(){
-
-let emailInput =
-document.getElementById("email").value.trim();
-
-let user =
-JSON.parse(localStorage.getItem("userData"));
-
-
-if(!user){
-
-document.getElementById("result").innerHTML =
-"No account found. Please Sign Up.";
-
-return;
-
-}
+        <script>
 
 
-if(emailInput === user.email){
+            function showPassword() {
 
-document.getElementById("result").innerHTML =
-"Your Password: " + user.password;
+                let emailInput = document.getElementById("email").value.trim();
 
-}
-else{
-
-document.getElementById("result").innerHTML =
-"Email not found";
-
-}
-
-}
-
-</script>
+                let user = JSON.parse(localStorage.getItem("userData"));
 
 
-</body>
+                if (!user) {
+                    document.getElementById("result").innerHTML = "No account found. Please Sign Up.";
+                    return;
+                }
+
+
+                if (emailInput === user.email) {
+                    document.getElementById("result").innerHTML = "Your Password: " + user.password;
+                }
+
+
+                else {
+                    document.getElementById("result").innerHTML = "Email not found";
+                }
+            }
+
+        </script>
+
+    </body>
+
 </html>
