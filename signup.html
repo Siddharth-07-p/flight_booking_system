@@ -1,89 +1,121 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-<meta charset="UTF-8">
-<title>Signup</title>
-<link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <title>Signup</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-<div class="mini-hero">
-<div class="mini-header">
-<h2>Create Account</h2>
-<a href="index.html" class="home-btn">Home</a>
-</div>
-</div>
+    <div class="split-layout">
+
+        <!-- Left Visual Pane -->
+        <div class="split-visual" style="background-image: url('auth-bg.png');">
+            <div class="visual-overlay">
+                <div class="logo-container" style="margin-bottom: auto;">
+                    <a href="index.html">
+                        <img src="logo.jpg" alt="FlyEasy Logo">
+                    </a>
+                </div>
+                <div>
+                    <a href="index.html" style="text-decoration:none;">
+                        <h1 class="visual-logo">Fly Easy</h1>
+                    </a>
+                    <p class="visual-tagline">Begin your journey towards new horizons.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Form Pane -->
+        <div class="split-form-container">
+            <div class="form-wrapper">
+                <a href="index.html" class="back-link">← Back to Home</a>
+
+                <h2 class="auth-title">Create Account</h2>
+                <p class="auth-subtitle">Join us today for a seamless booking experience.</p>
+
+                <form id="signupForm" class="modern-form">
+
+                    <div class="input-group">
+                        <label>Full Name</label>
+                        <input type="text" id="name" placeholder="Enter your name" required>
+                    </div>
+
+                    <div class="input-row">
+                        <div class="input-group">
+                            <label>Email Address</label>
+                            <input type="email" id="email" placeholder="Enter your mail ID" required>
+                        </div>
+                        <div class="input-group">
+                            <label>Phone Number</label>
+                            <input type="tel" id="phone" placeholder="Enter your phone number" required>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Password</label>
+                        <input type="password" id="password" placeholder="Create a strong password" required>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Confirm Password</label>
+                        <input type="password" id="confirm" placeholder="Repeat your password" required>
+                    </div>
+
+                    <button type="submit" class="auth-submit-btn">
+                        Create Account
+                    </button>
+                </form>
+
+                <p class="auth-switch-modern">
+                    Already have an account? <a href="login.html">Login</a>
+                </p>
+
+            </div>
+        </div>
+
+    </div>
+
+    <script>
 
 
-<div class="auth-container">
+        document.getElementById("signupForm").addEventListener("submit", function (e) {
 
-<h2>Create Account</h2>
-
-<form id="signupForm">
-
-<label>Name</label>
-<input type="text" id="name" required>
-
-<label>Email</label>
-<input type="email" id="email" required>
-
-<label>Phone</label>
-<input type="tel" id="phone" required>
-
-<label>Password</label>
-<input type="password" id="password" required>
-
-<label>Confirm Password</label>
-<input type="password" id="confirm" required>
-
-<button type="submit">
-Create Account
-</button>
-
-</form>
-
-<p class="auth-switch">
-Already have account?
-<a href="login.html">Login</a>
-</p>
-
-</div>
+            e.preventDefault();
 
 
-<script>
+            let name = document.getElementById("name").value;
 
-document.getElementById("signupForm").addEventListener("submit",function(e){
+            let email = document.getElementById("email").value;
 
-e.preventDefault();
+            let phone = document.getElementById("phone").value;
 
-let name=document.getElementById("name").value;
-let email=document.getElementById("email").value;
-let phone=document.getElementById("phone").value;
-let pass=document.getElementById("password").value;
-let confirm=document.getElementById("confirm").value;
+            let pass = document.getElementById("password").value;
 
-if(pass!==confirm){
-alert("Passwords do not match");
-return;
-}
+            let confirm = document.getElementById("confirm").value;
 
-let user={
-name:name,
-email:email,
-phone:phone,
-password:pass
-};
 
-localStorage.setItem("userData",JSON.stringify(user));
 
-alert("Account Created");
+            if (pass !== confirm) {
+                alert("Passwords do not match");
+                return;
+            }
 
-window.location="login.html";
 
-});
+            let user = { name: name, email: email, phone: phone, password: pass };
 
-</script>
+
+            localStorage.setItem("userData", JSON.stringify(user));
+
+            alert("Account Created");
+
+            window.location = "login.html";
+        });
+
+    </script>
 
 </body>
+
 </html>
