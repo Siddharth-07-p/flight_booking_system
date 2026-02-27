@@ -1,207 +1,152 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-
-<meta charset="UTF-8">
-<title>Payment</title>
-
-<link rel="stylesheet" href="style.css">
-
+    <meta charset="UTF-8">
+    <title>Payment</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
+    <div class="mini-hero">
+
+        <div class="mini-header">
+            <h2>Payment</h2>
+
+            <a href="index.html" class="home-btn">
+                Home
+            </a>
+        </div>
+
+    </div>
+
+    <div class="checkout-container">
+
+        <div class="checkout-header">
+            <h2>Complete Your Payment</h2>
+        </div>
+
+        <div id="noBooking" style="text-align:center; padding: 40px; display:none">
+            <h2>No booking found</h2>
+            <p>Please search and select a flight first.</p>
+            <br>
+            <a href="index.html" class="home-btn" style="display:inline-block; margin-top:10px;">
+                Search Flights
+            </a>
+        </div>
+
+        <div id="paymentBox" class="checkout-body" style="display:none">
+
+            <h3 class="checkout-section-title">Order Summary</h3>
+
+            <div class="order-summary">
+                <div class="summary-row">
+                    <span class="summary-label">Route</span>
+                    <span class="summary-value" id="route"></span>
+                </div>
+                <div class="summary-row">
+                    <span class="summary-label">Flight</span>
+                    <span class="summary-value" id="flight"></span>
+                </div>
+                <div class="summary-row">
+                    <span class="summary-label">Date</span>
+                    <span class="summary-value" id="date"></span>
+                </div>
+                <div class="summary-row">
+                    <span class="summary-label">Passengers</span>
+                    <span class="summary-value" id="passengers"></span>
+                </div>
+                <div class="summary-row">
+                    <span class="summary-label">Class</span>
+                    <span class="summary-value" id="class"></span>
+                </div>
+
+                <div class="summary-total">
+                    <span class="summary-label">Total Price</span>
+                    <span class="summary-value">₹<span id="price"></span></span>
+                </div>
+                <div class="tax-note">Includes all taxes and service charges</div>
+            </div>
+
+            <h3 class="checkout-section-title">Select Payment Method</h3>
+
+            <div class="payment-methods">
+                <label class="payment-method-label">
+                    <input type="radio" name="payment" value="UPI" checked>
+                    <!-- Using generic placeholder icons for UPI providers if local ones are missing, defaulting to the requested structure -->
+                    <img src="gpay.jpg" alt="GPay" style="height:24px; margin-right:5px; object-fit:contain;">
+                    <span style="margin-right:5px; color:#ccc;">/</span>
+                    <img src="phonepe.png" alt="PhonePe" style="height:24px; margin-right:5px; object-fit:contain;"
+                        onerror="this.src='https://via.placeholder.com/40x24/ffffff/000000?text=PhonePe'">
+                    <span style="margin-right:5px; color:#ccc;">/</span>
+                    <img src="paytm.png" alt="Paytm" style="height:24px; margin-right:15px; object-fit:contain;"
+                        onerror="this.src='https://via.placeholder.com/40x24/ffffff/000000?text=Paytm'">
+                    <span class="payment-method-name">UPI</span>
+                </label>
+
+                <label class="payment-method-label">
+                    <input type="radio" name="payment" value="Card">
+                    <!-- Placeholder icon for Card -->
+                    <img src="card.png" alt="Credit/Debit Card">
+                    <span class="payment-method-name">Credit / Debit Card</span>
+                </label>
+
+                <label class="payment-method-label">
+                    <input type="radio" name="payment" value="NetBanking">
+                    <!-- Placeholder icon for Netbanking -->
+                    <img src="banking.png" alt="Net Banking">
+                    <span class="payment-method-name">Net Banking</span>
+                </label>
+            </div>
+
+            <button class="pay-btn" onclick="payNow()">Pay Securely</button>
+
+        </div>
+    </div>
+
+    <script>
+
+        let booking =
+            JSON.parse(localStorage.getItem("bookingData"));
+
 
-<!-- HEADER -->
+        if (!booking) {
+            document.getElementById("noBooking").style.display = "block";
+        }
 
-<div class="mini-hero">
+        else {
+            document.getElementById("paymentBox").style.display = "block";
 
-<div class="mini-header">
+            document.getElementById("route").innerHTML = booking.route;
 
-<h2>Payment</h2>
+            document.getElementById("flight").innerHTML = booking.flight;
 
-<a href="index.html" class="home-btn">
-Home
-</a>
+            document.getElementById("date").innerHTML = booking.date;
 
-</div>
+            document.getElementById("passengers").innerHTML = booking.passengers;
 
-</div>
+            document.getElementById("class").innerHTML = booking.class;
 
+            document.getElementById("price").innerHTML = booking.price;
+        }
 
+        function payNow() {
 
-<div class="results-container">
+            let method = document.querySelector("input[name='payment']:checked");
 
+            if (!method) {
+                alert("Select payment method");
+                return;
+            }
 
-<!-- NO BOOKING MESSAGE -->
+            localStorage.setItem("paymentDone", "yes");
 
-<div id="noBooking"
-style="text-align:center;margin-top:60px;display:none">
+            alert("Payment Successful");
 
-<h2>No booking found</h2>
-
-<p>Please search and select a flight first</p>
-
-<br>
-
-<a href="index.html" class="home-btn">
-Search Flights
-</a>
-
-</div>
-
-
-
-<!-- PAYMENT BOX -->
-
-<div id="paymentBox" style="display:none">
-
-
-<h2 style="text-align:center">
-Payment Details
-</h2>
-
-
-<div class="flight-card" style="display:block">
-
-
-<p><b>Route:</b> <span id="route"></span></p>
-
-<p><b>Flight:</b> <span id="flight"></span></p>
-
-<p><b>Date:</b> <span id="date"></span></p>
-
-<p><b>Passengers:</b> <span id="passengers"></span></p>
-
-<p><b>Class:</b> <span id="class"></span></p>
-
-<p><b>Total Price:</b> ₹<span id="price"></span></p>
-
-<p style="color:gray;font-size:14px">
-(Price includes taxes and service charges)
-</p>
-
-
-<hr>
-
-
-<h3>Select Payment Method</h3>
-
-
-<label>
-<input type="radio" name="payment" value="UPI">
-UPI
-</label>
-
-<br><br>
-
-<label>
-<input type="radio" name="payment" value="Card">
-Credit/Debit Card
-</label>
-
-<br><br>
-
-<label>
-<input type="radio" name="payment" value="NetBanking">
-Net Banking
-</label>
-
-<br><br>
-
-
-<button onclick="payNow()">
-Pay Now
-</button>
-
-
-</div>
-
-
-</div>
-
-
-</div>
-
-
-
-<script>
-
-
-let booking =
-JSON.parse(localStorage.getItem("bookingData"));
-
-
-/* No booking */
-
-if(!booking){
-
-document.getElementById("noBooking").style.display="block";
-
-}
-
-
-/* Show payment */
-
-else{
-
-document.getElementById("paymentBox").style.display="block";
-
-
-document.getElementById("route").innerHTML=
-booking.route;
-
-document.getElementById("flight").innerHTML=
-booking.flight;
-
-document.getElementById("date").innerHTML=
-booking.date;
-
-document.getElementById("passengers").innerHTML=
-booking.passengers;
-
-document.getElementById("class").innerHTML=
-booking.class;
-
-document.getElementById("price").innerHTML=
-booking.price;
-
-}
-
-
-
-/* Payment */
-
-function payNow(){
-
-let method =
-document.querySelector("input[name='payment']:checked");
-
-
-if(!method){
-
-alert("Select payment method");
-
-return;
-
-}
-
-
-/* Save payment */
-
-localStorage.setItem("paymentDone","yes");
-
-
-alert("Payment Successful");
-
-
-window.location="confirmation.html";
-
-}
-
-
-</script>
-
-
+            window.location = "confirmation.html";
+        }
+    </script>
 </body>
+
 </html>
