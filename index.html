@@ -1,161 +1,441 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-<meta charset="UTF-8">
-<title>Flight Booking System</title>
-<link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <title>Flight Booking System</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
+    <div class="hero">
+        <div class="hero-top">
+            <div class="logo-container">
+                <img src="logo.jpg" alt="FlyEasy Logo">
+            </div>
 
-<!-- HERO -->
-<div class="hero">
+            <!-- Modern Nav inside Header -->
+            <nav class="main-nav">
+                <a href="index.html" class="active">Home</a>
+                <a href="booking.html">Booking</a>
+                <a href="confirmation.html">Confirmation</a>
+            </nav>
 
-<div class="hero-top">
+            <div class="auth-links" id="authArea">
+                <a href="login.html" class="login-link">Login</a>
+                <a href="signup.html" class="signup-btn">Sign Up</a>
+            </div>
+        </div>
+        <div class="hero-content">
+            <h1>BOOK YOUR JOURNEY TODAY</h1>
+            <p>Fast. Easy. Reliable Flight Booking.</p>
+        </div>
+    </div>
+    <section class="search-section">
+        <div class="search-tabs">
+            <div class="tab active" onclick="switchTab('searchForm', this)">Book a Flight</div>
+            <div class="tab" onclick="switchTab('manageBookingForm', this)">Manage Booking</div>
+            <div class="tab" onclick="switchTab('flightStatusForm', this)">Flight Status</div>
+        </div>
 
-<div class="logo-container">
-<img src="logo.jpg">
-</div>
+        <div class="trip-type-container" id="tripTypeContainer">
+            <label><input type="radio" name="tripType" value="One Way" checked> One Way</label>
+            <label><input type="radio" name="tripType" value="Round Trip"> Round Trip</label>
+        </div>
 
-<div class="auth-links" id="authArea">
-<a href="login.html" class="login-link">Login</a>
-<a href="signup.html" class="signup-btn">Sign Up</a>
-</div>
+        <form id="searchForm">
+            <div class="form-group">
+                <label>From</label>
+                <select id="fromCity">
+                    <option value="">Select Origin</option>
+                    <option>Chennai</option>
+                    <option>Bangalore</option>
+                    <option>Hyderabad</option>
+                    <option>Mumbai</option>
+                    <option>Delhi</option>
+                </select>
+            </div>
 
-</div>
+            <div class="swap-btn-container">
+                <div class="swap-btn" onclick="swapCities()" title="Swap Cities">⇄</div>
+            </div>
 
-<div class="hero-content">
-<h1>Book Your Journey Today</h1>
-<p>Fast. Easy. Reliable Flight Booking.</p>
-</div>
+            <div class="form-group">
+                <label>To</label>
+                <select id="toCity">
+                    <option value="">Select Destination</option>
+                    <option>Mumbai</option>
+                    <option>Delhi</option>
+                    <option>Bangalore</option>
+                    <option>Chennai</option>
+                    <option>Hyderabad</option>
+                </select>
+            </div>
 
-</div>
+            <div class="form-group">
+                <label>Departure Date</label>
+                <input type="date" id="travelDate">
+            </div>
 
+            <div class="form-group">
+                <label>Return Date</label>
+                <input type="date" id="returnDate" disabled title="Select Round Trip to enable">
+            </div>
 
-<!-- NAV -->
-<nav>
-<a href="index.html">Home</a>
-<a href="booking.html">Booking</a>
-<a href="confirmation.html">Confirmation</a>
-</nav>
+            <div class="form-group">
+                <label>Passengers & Class</label>
+                <div class="passengers-display" id="passengerDisplay" onclick="toggleDropdown()">
+                    1 Adult, Economy
+                </div>
 
+                <div class="passenger-dropdown" id="passengerDropdown">
+                    <div class="passenger-type">
+                        <div>
+                            <strong>Adults</strong>
+                            <span>12+ yrs</span>
+                        </div>
+                        <div class="counter">
+                            <button type="button" onclick="updateCount('adults', -1)">-</button>
+                            <span id="adultCount">1</span>
+                            <button type="button" onclick="updateCount('adults', 1)">+</button>
+                        </div>
+                    </div>
+                    <div class="passenger-type">
+                        <div>
+                            <strong>Children</strong>
+                            <span>2-12 yrs</span>
+                        </div>
+                        <div class="counter">
+                            <button type="button" onclick="updateCount('children', -1)">-</button>
+                            <span id="childCount">0</span>
+                            <button type="button" onclick="updateCount('children', 1)">+</button>
+                        </div>
+                    </div>
+                    <div class="passenger-type">
+                        <div>
+                            <strong>Infants</strong>
+                            <span>
+                                <2 yrs</span>
+                        </div>
+                        <div class="counter">
+                            <button type="button" onclick="updateCount('infants', -1)">-</button>
+                            <span id="infantCount">0</span>
+                            <button type="button" onclick="updateCount('infants', 1)">+</button>
+                        </div>
+                    </div>
+                    <div style="margin-top:15px">
+                        <label style="display:block; margin-bottom:5px; font-weight:bold; font-size:12px;">Class</label>
+                        <select id="flightClass"
+                            style="width:100%; padding:8px; font-size:14px; border:1px solid #ccc; border-radius:4px;">
+                            <option>Economy</option>
+                            <option>Business</option>
+                            <option>First Class</option>
+                        </select>
+                    </div>
+                    <button type="button" onclick="toggleDropdown()"
+                        style="width:100%; margin-top:15px; padding:10px; background:#001B94; color:white; border:none; border-radius:4px; cursor:pointer;">Done</button>
+                </div>
+            </div>
 
-<!-- SEARCH -->
-<section class="search-section">
+            <div class="search-btn-container" id="mainSearchBtnGroup">
+                <button type="submit">Search Flights</button>
+            </div>
+        </form>
 
-<h2>Search Flights</h2>
+        <!-- Tab 2: Manage Booking -->
+        <form id="manageBookingForm" style="display:none;">
+            <div style="display:flex; gap:15px; margin-bottom:20px; align-items:flex-end; width:100%;">
+                <div class="form-group" style="flex:1;">
+                    <label>PNR / Booking Reference</label>
+                    <input type="text" placeholder="e.g. FB32617"
+                        style="width:100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; font-size:14px; box-sizing:border-box;">
+                </div>
+                <div class="form-group" style="flex:1;">
+                    <label>Email ID / Last Name</label>
+                    <input type="text" placeholder="Enter Email or Last Name"
+                        style="width:100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; font-size:14px; box-sizing:border-box;">
+                </div>
+                <div class="search-btn-container" style="flex: 0 0 auto; margin-top:0;">
+                    <button type="button" onclick="handleManageBooking()">Retrieve Booking</button>
+                </div>
+            </div>
+            <div id="manageBookingError" style="color:red; font-size:14px; margin-top:10px; display:none;"></div>
+        </form>
 
-<form id="searchForm">
+        <!-- Tab 3: Flight Status -->
+        <form id="flightStatusForm" style="display:none;">
+            <div style="display:flex; gap:15px; margin-bottom:20px; align-items:flex-end; width:100%;">
+                <div class="form-group" style="flex:1;">
+                    <label>Flight Number</label>
+                    <input type="text" placeholder="e.g. AI-203"
+                        style="width:100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; font-size:14px; box-sizing:border-box;">
+                </div>
+                <div class="form-group" style="flex:1;">
+                    <label>Travel Date</label>
+                    <input type="date"
+                        style="width:100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; font-size:14px; box-sizing:border-box;">
+                </div>
+                <div class="search-btn-container" style="flex: 0 0 auto; margin-top:0;">
+                    <button type="button" onclick="handleFlightStatus()">Check Status</button>
+                </div>
+            </div>
+            <div id="flightStatusResult"
+                style="margin-top:15px; display:none; padding:15px; border-radius:8px; background-color:#f8fdf8; border:1px solid #c3e6cb; color:#155724; font-size:14px; font-weight:bold;">
+                <!-- Mock status goes here -->
+            </div>
+            <div id="flightStatusError" style="color:red; font-size:14px; margin-top:10px; display:none;"></div>
+        </form>
 
-<label>From:</label>
-<select id="fromCity">
-<option value="">Select City</option>
-<option>Chennai</option>
-<option>Bangalore</option>
-<option>Hyderabad</option>
-<option>Mumbai</option>
-<option>Delhi</option>
-</select>
+    </section>
 
-<label>To:</label>
-<select id="toCity">
-<option value="">Select City</option>
-<option>Mumbai</option>
-<option>Delhi</option>
-<option>Bangalore</option>
-<option>Chennai</option>
-<option>Hyderabad</option>
-</select>
+    <h2 class="section-title" style="margin-top:20px;">Why Choose Fly Easy?</h2>
+    <div class="features-container"
+        style="display:flex; justify-content:center; gap:40px; margin-bottom: 60px; text-align:center; padding: 0 20px; flex-wrap:wrap;">
+        <div class="feature-item">
+            <div style="font-size:36px; margin-bottom:10px;">🛡️</div>
+            <h3 style="font-size:16px; margin-bottom:5px;">Safe Travel</h3>
+            <p style="font-size:14px; color:#666; max-width:200px;">Enhanced cleaning and safety protocols on every
+                flight.</p>
+        </div>
+        <div class="feature-item">
+            <div style="font-size:36px; margin-bottom:10px;">💸</div>
+            <h3 style="font-size:16px; margin-bottom:5px;">Best Prices</h3>
+            <p style="font-size:14px; color:#666; max-width:200px;">We guarantee the most competitive rates directly
+                from the source.</p>
+        </div>
+        <div class="feature-item">
+            <div style="font-size:36px; margin-bottom:10px;">⏱️</div>
+            <h3 style="font-size:16px; margin-bottom:5px;">24/7 Support</h3>
+            <p style="font-size:14px; color:#666; max-width:200px;">Our customer service team is always ready to assist
+                you.</p>
+        </div>
+    </div>
 
-<label>Departure Date:</label>
-<input type="date" id="travelDate">
+    <footer>
+        <p>© 2026 Fly Easy</p>
+    </footer>
 
-<label>Passengers:</label>
+    <script>
+        localStorage.removeItem("searchData");
+        localStorage.removeItem("bookingData");
 
-<input type="number" id="passengers" placeholder="Enter number of passengers" min="1" max="10">
+        let today = new Date().toISOString().split("T")[0];
+        document.getElementById("travelDate").min = today;
+        document.getElementById("returnDate").min = today;
 
-<label>Class:</label>
-<select id="flightClass">
-<option value="">Select</option>
-<option>Economy</option>
-<option>Business</option>
-<option>First Class</option>
-</select>
+        let user = localStorage.getItem("loggedUser");
 
-<button type="submit">
-Search Flights
-</button>
+        if (user) {
+            document.getElementById("authArea").innerHTML =
+                "<span style='color:white;font-weight:bold;margin-right:15px'>" + user + "</span>" +
+                "<button onclick='logout()' class='signup-btn'>Logout</button>";
+        }
 
-</form>
+        function logout() {
+            localStorage.removeItem("loggedUser");
+            location.reload();
+        }
 
-</section>
+        // --- NEW UI LOGIC ---
 
+        // Trip Type Radio Handle
+        let tripRadios = document.getElementsByName('tripType');
+        let returnDate = document.getElementById('returnDate');
+        for (let i = 0; i < tripRadios.length; i++) {
+            tripRadios[i].addEventListener('change', function () {
+                if (this.value === 'Round Trip') {
+                    returnDate.disabled = false;
+                } else {
+                    returnDate.disabled = true;
+                    returnDate.value = '';
+                }
+            });
+        }
 
-<footer>
-<p>© 2026 Flight Booking System</p>
-</footer>
+        function swapCities() {
+            let from = document.getElementById("fromCity");
+            let to = document.getElementById("toCity");
+            let temp = from.value;
+            from.value = to.value;
+            to.value = temp;
+        }
 
+        // Passenger Dropdown logic
+        function toggleDropdown() {
+            let drop = document.getElementById("passengerDropdown");
+            if (drop.style.display === "block") {
+                drop.style.display = "none";
+                updateDisplayString();
+            } else {
+                drop.style.display = "block";
+            }
+        }
 
-<script>
-localStorage.removeItem("searchData");
-localStorage.removeItem("bookingData");
-let today=new Date().toISOString().split("T")[0];
-document.getElementById("travelDate").min=today;
+        let counts = { adults: 1, children: 0, infants: 0 };
+        function updateCount(type, change) {
+            let newVal = counts[type] + change;
+            if (newVal < 0) return;
+            if (type === 'adults' && newVal < 1) return; // Must have 1 adult
+            if (newVal > 9) return; // Max 9
 
+            counts[type] = newVal;
+            document.getElementById(type === 'adults' ? 'adultCount' : (type === 'children' ? 'childCount' : 'infantCount')).innerText = newVal;
+            updateDisplayString();
+        }
 
-/* LOGIN STATUS */
+        function updateDisplayString() {
+            let total = counts.adults + counts.children;
+            let cls = document.getElementById("flightClass").value;
+            let str = total + " Traveller(s), " + cls;
+            document.getElementById("passengerDisplay").innerText = str;
+        }
 
-let user=localStorage.getItem("loggedUser");
+        // Update when class changes without closing dropdown
+        document.getElementById("flightClass").addEventListener("change", updateDisplayString);
 
-if(user){
-document.getElementById("authArea").innerHTML=
-"<span style='color:white;font-weight:bold;margin-right:15px'>"+user+"</span>"+
-"<button onclick='logout()' class='signup-btn'>Logout</button>";
-}
+        // Close dropdown when clicking outside
+        window.onclick = function (event) {
+            if (!event.target.matches('.passengers-display') && !event.target.closest('.passenger-dropdown')) {
+                let dropdowns = document.getElementsByClassName("passenger-dropdown");
+                for (let i = 0; i < dropdowns.length; i++) {
+                    let openDropdown = dropdowns[i];
+                    if (openDropdown.style.display === "block") {
+                        openDropdown.style.display = "none";
+                        updateDisplayString();
+                    }
+                }
+            }
+        }
 
-function logout(){
-localStorage.removeItem("loggedUser");
-location.reload();
-}
+        document.getElementById("searchForm").addEventListener("submit", function (e) {
+            e.preventDefault();
 
+            let from = document.getElementById("fromCity").value;
+            let to = document.getElementById("toCity").value;
+            let date = document.getElementById("travelDate").value;
+            let rDate = document.getElementById("returnDate").value;
+            let tripType = document.querySelector('input[name="tripType"]:checked').value;
+            let flightClass = document.getElementById("flightClass").value;
 
-/* SEARCH */
+            if (from === "" || to === "" || date === "") {
+                alert("Please fill origin, destination, and departure date fields.");
+                return;
+            }
 
-document.getElementById("searchForm").addEventListener("submit",function(e){
+            if (tripType === 'Round Trip' && rDate === "") {
+                alert("Please select a return date for round trips.");
+                return;
+            }
 
-e.preventDefault();
+            if (from === to) {
+                alert("Origin and Destination cannot be the same.");
+                return;
+            }
 
-let from=document.getElementById("fromCity").value;
-let to=document.getElementById("toCity").value;
-let date=document.getElementById("travelDate").value;
-let passengers=document.getElementById("passengers").value;
-let flightClass=document.getElementById("flightClass").value;
+            // Total passengers for pricing purposes (Infants usually free or flat rate, so keep it simple for now)
+            let totalPassengers = counts.adults + counts.children;
 
-if(from===""||to===""||date===""||passengers===""||flightClass===""){
-alert("Fill all fields");
-return;
-}
+            // Gather special fares
+            let sFares = [];
+            let checkboxes = document.querySelectorAll('.special-fare-label input[type="checkbox"]:checked');
+            checkboxes.forEach((cb) => { sFares.push(cb.value); });
 
-if(from===to){
-alert("From and To cannot be same");
-return;
-}
+            let searchData = {
+                from: from,
+                to: to,
+                date: date,
+                returnDate: rDate,
+                tripType: tripType,
+                passengers: totalPassengers, // Note: Send total to booking to work with old logic
+                adults: counts.adults,
+                children: counts.children,
+                infants: counts.infants,
+                class: flightClass,
+                specialFares: sFares
+            };
 
-let searchData={
-from:from,
-to:to,
-date:date,
-passengers:passengers,
-class:flightClass
-};
+            localStorage.setItem("searchData", JSON.stringify(searchData));
+            window.location = "booking.html";
+        });
 
-localStorage.setItem("searchData",JSON.stringify(searchData));
+        // Tab Switching Logic
+        function switchTab(targetFormId, clickedTab) {
+            // Remove active class from all tabs
+            let tabs = document.querySelectorAll('.search-tabs .tab');
+            tabs.forEach(tab => tab.classList.remove('active'));
 
-window.location="booking.html";
+            // Add active class to clicked tab
+            clickedTab.classList.add('active');
 
-});
+            // Hide all form sections
+            document.getElementById('searchForm').style.display = 'none';
+            document.getElementById('manageBookingForm').style.display = 'none';
+            document.getElementById('flightStatusForm').style.display = 'none';
+            document.getElementById('tripTypeContainer').style.display = 'none';
 
-</script>
+            // Show the target form
+            if (targetFormId === 'searchForm') {
+                document.getElementById(targetFormId).style.display = 'flex';
+                document.getElementById('tripTypeContainer').style.display = 'flex'; // Restore inline-flex layout
+            } else {
+                document.getElementById(targetFormId).style.display = 'block';
+            }
+        }
 
+        // Manage Booking Functionality
+        function handleManageBooking() {
+            let pnrInput = document.getElementById("manageBookingForm").querySelector("input[placeholder='e.g. FB32617']").value.trim();
+            let emailInput = document.getElementById("manageBookingForm").querySelector("input[placeholder='Enter Email or Last Name']").value.trim();
+            let errorDiv = document.getElementById("manageBookingError");
+
+            if (!pnrInput || !emailInput) {
+                errorDiv.innerText = "Please enter both PNR and Email/Last Name.";
+                errorDiv.style.display = "block";
+                return;
+            }
+
+            let savedStr = localStorage.getItem("savedBookings");
+            if (savedStr) {
+                let saved = JSON.parse(savedStr);
+                let found = saved.find(b => b.pnr.toUpperCase() === pnrInput.toUpperCase());
+
+                if (found) {
+                    // Temporarily load this specific booking into the active bookingData to display it
+                    localStorage.setItem("bookingData", JSON.stringify(found.flight));
+                    // Redirect to confirmation page to view the ticket
+                    window.location.href = "confirmation.html?pnr=" + found.pnr;
+                } else {
+                    errorDiv.innerText = "Booking not found. Please check your PNR.";
+                    errorDiv.style.display = "block";
+                }
+            } else {
+                errorDiv.innerText = "No bookings found in the system.";
+                errorDiv.style.display = "block";
+            }
+        }
+
+        // Flight Status Functionality
+        function handleFlightStatus() {
+            let flightNum = document.getElementById("flightStatusForm").querySelector("input[placeholder='e.g. AI-203']").value.trim();
+            let date = document.getElementById("flightStatusForm").querySelector("input[type='date']").value;
+            let resultDiv = document.getElementById("flightStatusResult");
+            let errorDiv = document.getElementById("flightStatusError");
+
+            resultDiv.style.display = "none";
+            errorDiv.style.display = "none";
+
+            if (!flightNum || !date) {
+                errorDiv.innerText = "Please enter Flight Number and Travel Date.";
+                errorDiv.style.display = "block";
+                return;
+            }
+
+            // Generate mock interactive status
+            resultDiv.innerHTML = `✈️ Flight <strong>${flightNum.toUpperCase()}</strong> is <strong>ON TIME</strong>.<br>Expected departure on ${date} at 10:30 AM from Terminal 2.`;
+            resultDiv.style.display = "block";
+        }
+
+    </script>
 </body>
+
 </html>
