@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - FlyEasy</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .profile-container {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 0 20px;
+            min-height: 60vh;
+        }
+
+        .profile-header {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            margin-bottom: 40px;
+        }
+
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #001B94, #0044ff);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            font-weight: bold;
+        }
+
+        .profile-info h2 {
+            margin: 0 0 5px;
+            color: #333;
+        }
+
+        .profile-info p {
+            margin: 0;
+            color: #666;
+        }
+
+        .section-title {
+            font-size: 22px;
+            margin-bottom: 20px;
+            color: #333;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        .booking-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border-left: 5px solid #001B94;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: transform 0.2s;
+        }
+        
+        .booking-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .booking-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 20px;
+            flex: 1;
+        }
+
+        .b-col {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .b-label {
+            font-size: 11px;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .b-value {
+            font-size: 15px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .b-status {
+            background: #e8f5e9;
+            color: #2e7d32;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            display: inline-block;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px;
+            background: white;
+            border-radius: 12px;
+            color: #666;
+            border: 2px dashed #ccc;
+        }
+
+        body.dark-mode .profile-header, body.dark-mode .booking-card, body.dark-mode .empty-state {
+            background: #1e1e1e;
+            border-color: #333;
+        }
+        
+        body.dark-mode .section-title { color: #fff; border-color: #333; }
+        body.dark-mode .profile-info h2, body.dark-mode .b-value { color: #fff; }
+        body.dark-mode .b-status { background: #1b5e20; color: #a5d6a7; }
+        
+        @media (max-width: 768px) {
+            .booking-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <app-header></app-header>
+
+    <div class="profile-container">
+        
+        <div class="profile-header" id="profileHeader" style="display:none;">
+            <div class="profile-avatar" id="avatarLetter">U</div>
+            <div class="profile-info">
+                <h2 id="userName">User Name</h2>
+                <p id="userEmail">user@example.com</p>
+            </div>
+        </div>
+
+        <!-- Phase 4: Loyalty Tier -->
+        <div class="loyalty-card" id="loyaltyCard" style="padding: 25px; border-radius: 12px; margin-bottom: 40px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); color: #333; display:none;">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <div>
+                    <h2 style="margin:0 0 5px;" id="tierName">Gold Member 🏆</h2>
+                    <p style="margin:0; opacity:0.9;">You have <strong id="tierMiles" style="font-size:18px;">2,500</strong> FlyEasy Miles</p>
+                </div>
+                <div style="text-align:right;">
+                    <p style="margin:0; font-size:12px; font-weight:bold; text-transform:uppercase; letter-spacing:1px;" id="tierNext">2,500 miles to Platinum</p>
+                </div>
+            </div>
+            <div style="width:100%; height:12px; background:rgba(255,255,255,0.4); border-radius:6px; margin-top:20px; overflow:hidden;">
+                <div id="tierProgress" style="width:0%; height:100%; background:rgba(0,0,0,0.6); border-radius:6px; transition:width 1s ease 0.5s;"></div>
+            </div>
+        </div>
+
+        <h3 class="section-title">My Bookings</h3>
+        
+        <div id="bookingsList">
+            <!-- Bookings injected here -->
+        </div>
+
+    </div>
+
+    <app-footer></app-footer>
+    <script src="components.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            let userDataStr = localStorage.getItem("userData");
+            let loggedUser = localStorage.getItem("loggedUser");
+            
+            if (!loggedUser) {
+                showToast("Please login to view your profile", "error");
+                setTimeout(() => window.location = "login.html", 1500);
+                return;
+            }
+            
+            document.getElementById("profileHeader").style.display = "flex";
+            
+            let name = loggedUser;
+            let email = "Connected";
+            if (userDataStr) {
+                try {
+                    let userObj = JSON.parse(userDataStr);
+                    name = userObj.name || name;
+                    email = userObj.email || email;
+                } catch(e) {}
+            }
+            
+            document.getElementById("userName").innerText = name;
+            document.getElementById("userEmail").innerText = email;
+            document.getElementById("avatarLetter").innerText = name.charAt(0).toUpperCase();
+
+            // Loyalty Gamification Logic
+            let miles = parseInt(localStorage.getItem("userMiles") || "0");
+            if(miles > 0) {
+                document.getElementById("loyaltyCard").style.display = "block";
+                document.getElementById("tierMiles").innerText = miles.toLocaleString();
+                
+                let currentTier = "Bronze Member 🥉";
+                let nextMilestone = 5000;
+                let bgGradient = "linear-gradient(135deg, #cd7f32 0%, #8b6038 100%)";
+                let textColor = "#fff";
+                
+                if(miles >= 25000) {
+                    currentTier = "Platinum Member 💎"; bgGradient = "linear-gradient(135deg, #e5e4e2 0%, #b0c4de 100%)"; textColor = "#333"; nextMilestone = 100000;
+                } else if(miles >= 10000) {
+                    currentTier = "Gold Member 🏆"; bgGradient = "linear-gradient(135deg, #FFDF00 0%, #DAA520 100%)"; textColor = "#333"; nextMilestone = 25000;
+                } else if(miles >= 5000) {
+                    currentTier = "Silver Member 🥈"; bgGradient = "linear-gradient(135deg, #C0C0C0 0%, #a9a9a9 100%)"; textColor = "#333"; nextMilestone = 10000;
+                }
+                
+                let card = document.getElementById("loyaltyCard");
+                card.style.background = bgGradient;
+                card.style.color = textColor;
+                document.getElementById("tierName").innerText = currentTier;
+                document.getElementById("tierNext").innerText = (nextMilestone - miles).toLocaleString() + " miles to next tier";
+                document.getElementById("tierProgress").style.backgroundColor = textColor === "#fff" ? "rgba(255,255,255,0.7)" : "rgba(0,0,0,0.4)";
+                
+                let pct = Math.min(100, Math.round((miles / nextMilestone) * 100));
+                document.getElementById("tierProgress").style.width = pct + "%";
+            }
+
+            // Load bookings
+            let bookingsStr = localStorage.getItem("savedBookings");
+            let listContainer = document.getElementById("bookingsList");
+            
+            if(!bookingsStr || JSON.parse(bookingsStr).length === 0) {
+                listContainer.innerHTML = `
+                    <div class="empty-state">
+                        <h2 style="margin-bottom:10px;">No trips found</h2>
+                        <p>When you book a flight, it will appear here.</p>
+                        <br>
+                        <a href="index.html" class="home-btn" style="display:inline-block">Book a Flight</a>
+                    </div>
+                `;
+                return;
+            }
+            
+            let bookings = JSON.parse(bookingsStr);
+            // Reverse so newest is first
+            bookings.reverse().forEach(b => {
+                let f = b.flight;
+                let card = document.createElement("div");
+                card.className = "booking-card";
+                card.innerHTML = `
+                    <div class="booking-grid">
+                        <div class="b-col">
+                            <span class="b-label">PNR / Booking ID</span>
+                            <span class="b-value">${b.pnr}</span>
+                        </div>
+                        <div class="b-col">
+                            <span class="b-label">Date</span>
+                            <span class="b-value">${f.date}</span>
+                        </div>
+                        <div class="b-col">
+                            <span class="b-label">Route</span>
+                            <span class="b-value">${f.route}</span>
+                        </div>
+                        <div class="b-col">
+                            <span class="b-label">Flight</span>
+                            <span class="b-value">${f.flight}</span>
+                        </div>
+                        <div class="b-col">
+                            <span class="b-label">Status</span>
+                            <span class="b-status">Confirmed ✓</span>
+                        </div>
+                    </div>
+                `;
+                listContainer.appendChild(card);
+            });
+        });
+    </script>
+</body>
+</html>

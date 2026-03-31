@@ -3,11 +3,14 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Signup</title>
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
+    <div id="toastContainer"></div>
+
 
     <div class="split-layout">
 
@@ -57,6 +60,7 @@
                     <div class="input-group">
                         <label>Password</label>
                         <input type="password" id="password" placeholder="Create a strong password" required>
+                        <div id="password-strength" style="font-size: 12px; margin-top: -5px; font-weight: bold;"></div>
                     </div>
 
                     <div class="input-group">
@@ -81,37 +85,66 @@
     <script>
 
 
-        document.getElementById("signupForm").addEventListener("submit", function (e) {
+        function showToast(message, type = 'error') {
+            let container = document.getElementById('toastContainer');
+            let toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerText = message;
+            container.appendChild(toast);
+            setTimeout(() => toast.classList.add('show'), 10);
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
 
+        const passInput = document.getElementById("password");
+        const confirmInput = document.getElementById("confirm");
+        const strengthDiv = document.getElementById("password-strength");
+
+        passInput.addEventListener('input', function() {
+            let val = passInput.value;
+            if(val.length === 0) { strengthDiv.innerText = ""; return; }
+            if(val.length < 6) { strengthDiv.innerText = "Weak"; strengthDiv.style.color = "red"; }
+            else if(val.search(/[0-9]/) < 0 || val.search(/[a-zA-Z]/) < 0) { strengthDiv.innerText = "Medium"; strengthDiv.style.color = "orange"; }
+            else { strengthDiv.innerText = "Strong"; strengthDiv.style.color = "green"; }
+            checkMatch();
+        });
+
+        confirmInput.addEventListener('input', checkMatch);
+
+        function checkMatch() {
+            if(confirmInput.value.length === 0) { confirmInput.style.borderColor = "#e0e0e0"; return; }
+            if(confirmInput.value === passInput.value) {
+                confirmInput.style.borderColor = "green";
+                confirmInput.style.boxShadow = "0 0 0 3px rgba(0, 255, 0, 0.1)";
+            } else {
+                confirmInput.style.borderColor = "red";
+                confirmInput.style.boxShadow = "0 0 0 3px rgba(255, 0, 0, 0.1)";
+            }
+        }
+
+        document.getElementById("signupForm").addEventListener("submit", function (e) {
             e.preventDefault();
 
-
             let name = document.getElementById("name").value;
-
             let email = document.getElementById("email").value;
-
             let phone = document.getElementById("phone").value;
-
-            let pass = document.getElementById("password").value;
-
-            let confirm = document.getElementById("confirm").value;
-
-
+            let pass = passInput.value;
+            let confirm = confirmInput.value;
 
             if (pass !== confirm) {
-                alert("Passwords do not match");
+                showToast("Passwords do not match", "error");
                 return;
             }
 
-
             let user = { name: name, email: email, phone: phone, password: pass };
-
-
             localStorage.setItem("userData", JSON.stringify(user));
 
-            alert("Account Created");
-
-            window.location = "login.html";
+            showToast("Account Created Successfully!", "success");
+            setTimeout(() => {
+                window.location = "login.html";
+            }, 1000);
         });
 
     </script>

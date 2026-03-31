@@ -8,19 +8,7 @@
 </head>
 
 <body>
-    <div class="mini-hero">
-
-        <div class="mini-header">
-            <h2>Available Flights</h2>
-
-            <nav class="main-nav">
-                <a href="index.html">Home</a>
-                <a href="booking.html" class="active">Booking</a>
-                <a href="confirmation.html">Confirmation</a>
-            </nav>
-        </div>
-
-    </div>
+    <app-header></app-header>
 
     <div class="booking-page-container">
 
@@ -34,6 +22,15 @@
                         onchange="applyFilters()"> Non-Stop</label>
                 <label class="filter-label"><input type="checkbox" id="filter1Stop" value="1" onchange="applyFilters()">
                     1 Stop</label>
+            </div>
+
+            <div class="filter-group">
+                <h4>Max Price</h4>
+                <input type="range" id="priceRange" min="3000" max="10000" value="10000" step="500" oninput="document.getElementById('priceVal').innerText=formatPrice(this.value); applyFilters()" style="width:100%;">
+                <div style="display:flex; justify-content:space-between; font-size:12px; color:#666; margin-top:5px;">
+                    <span id="sliderMin">₹3000</span>
+                    <span style="font-weight:bold; color:#001B94;" id="priceVal">₹10000</span>
+                </div>
             </div>
 
             <div class="filter-group">
@@ -54,6 +51,16 @@
                         onchange="applyFilters()" checked> IndiGo</label>
                 <label class="filter-label"><input type="checkbox" id="filterVistara" value="Vistara"
                         onchange="applyFilters()" checked> Vistara</label>
+            </div>
+
+            <div class="filter-group" style="margin-top:20px;">
+                <h4 style="margin-bottom:10px; color:#333;">Sort By</h4>
+                <select id="sortOptions" style="width:100%; padding:8px; border:1px solid #ddd; border-radius:5px;" onchange="applyFilters()">
+                    <option value="none">Recommended</option>
+                    <option value="priceLow">Price: Low to High</option>
+                    <option value="priceHigh">Price: High to Low</option>
+                    <option value="durationFast">Duration: Fastest</option>
+                </select>
             </div>
         </aside>
 
@@ -99,6 +106,15 @@
         ];
         let data = JSON.parse(localStorage.getItem("searchData"));
 
+        // Seamlessly convert to Round Trip packages
+        if (data && data.tripType === "Round Trip") {
+            mockFlights.forEach(f => {
+                f.originalAirline = f.airline;
+                f.airline = f.airline + " (+Return)";
+                f.price = Math.round(f.price * 1.85); // 15% return discount
+            });
+        }
+
         if (!data) {
             document.getElementById("noSearch").style.display = "block";
 
@@ -111,7 +127,11 @@
 
             document.getElementById("noSearch").style.display = "none";
 
-            document.getElementById("route").innerHTML = data.from + " → " + data.to;
+            if (data.tripType === "Round Trip") {
+                document.getElementById("route").innerHTML = data.from + " ⇄ " + data.to + " <span style='font-size:14px;font-weight:normal;color:#666;'>(Round Trip)</span>";
+            } else {
+                document.getElementById("route").innerHTML = data.from + " → " + data.to;
+            }
 
             let tripInfo = data.tripType === "Round Trip" ? data.date + " to " + data.returnDate : data.date;
 
@@ -128,8 +148,8 @@
             let user = localStorage.getItem("loggedUser");
 
             if (!user) {
-                alert("Please login before booking");
-                window.location = "login.html";
+                showToast("Please login before booking", "error");
+                setTimeout(() => window.location = "login.html", 1500);
                 return;
             }
 
@@ -152,8 +172,8 @@
 
             let bookingData = {
 
-                route: data.from + " → " + data.to,
-                date: data.date,
+                route: data.tripType === "Round Trip" ? data.from + " ⇄ " + data.to : data.from + " → " + data.to,
+                date: data.tripType === "Round Trip" ? data.date + " to " + data.returnDate : data.date,
                 flight: name,
                 departure: dep,
                 arrival: arr,
@@ -164,7 +184,7 @@
             };
 
             localStorage.setItem("bookingData", JSON.stringify(bookingData));
-            window.location = "payment.html";
+            window.location = "seats.html";
         }
 
         // --- 2. RENDER ENGINE ---
@@ -214,8 +234,8 @@
                     </div>
 
                     <div class="flight-price-action">
-                        <span class="price">₹${finalPrice}</span>
-                        <button class="book-btn" onclick="selectFlight('${flight.airline} ${flight.id}', '${flight.dep}', '${flight.arr}', '${flight.price}')">
+                        <span class="fw-bold fs-5">${formatPrice(finalPrice)}</span>
+                        <button class="book-btn" onclick="selectFlight('${flight.airline} ${flight.id}', '${flight.dep}', '${flight.arr}', ${flight.price})">
                             Book Now
                         </button>
                     </div>
@@ -234,9 +254,9 @@
         }
 
         function applyFilters() {
-            // 1. Gather selected filter values
+            // 1. Get filter states
             let selectedStops = [];
-            if (document.getElementById("filterNonStop").checked) selectedStops.push(0);
+            if (document.getElementById("filterNonStop") && document.getElementById("filterNonStop").checked) selectedStops.push(0);
             if (document.getElementById("filter1Stop").checked) selectedStops.push(1);
 
             let selectedTimes = [];
@@ -249,8 +269,12 @@
             if (document.getElementById("filterIndiGo").checked) selectedAirlines.push("IndiGo");
             if (document.getElementById("filterVistara").checked) selectedAirlines.push("Vistara");
 
+            let maxPrice = parseInt(document.getElementById("priceRange").value);
+
             // 2. Filter the mock array
             let filteredFlights = mockFlights.filter(flight => {
+                if (flight.price > maxPrice) return false;
+
                 // Check Stops
                 let passStops = selectedStops.length === 0 || selectedStops.includes(flight.stops);
 
@@ -258,24 +282,50 @@
                 let flightTimeCategory = getTimeCategory(flight.dep);
                 let passTime = selectedTimes.length === 0 || selectedTimes.includes(flightTimeCategory);
 
-                // Check Airlines
-                let passAirline = selectedAirlines.length === 0 || selectedAirlines.includes(flight.airline);
+                // Check Airlines safely against original if mutated for Round Trips
+                let actualAirline = flight.originalAirline || flight.airline;
+                let passAirline = selectedAirlines.length === 0 || selectedAirlines.includes(actualAirline);
 
                 // Flight must pass all active categories to be shown
                 return passStops && passTime && passAirline;
             });
 
-            // 3. Render the newly filtered list
-            renderFlights(filteredFlights);
+            let sortMethod = document.getElementById("sortOptions").value;
+            if (sortMethod === "priceLow") {
+                filteredFlights.sort((a, b) => parseInt(a.price) - parseInt(b.price));
+            } else if (sortMethod === "priceHigh") {
+                filteredFlights.sort((a, b) => parseInt(b.price) - parseInt(a.price));
+            } else if (sortMethod === "durationFast") {
+                filteredFlights.sort((a, b) => {
+                    let p = str => parseInt(str.split('h')[0])*60 + (str.includes('m') ? parseInt(str.split('h')[1]) : 0);
+                    return p(a.duration) - p(b.duration);
+                });
+            }
+
+            // Show skeletons for 1200ms to simulate robust API fetch parsing
+            document.getElementById("flightsContainer").innerHTML = `
+                <div class="skeleton-card"></div>
+                <div class="skeleton-card"></div>
+                <div class="skeleton-card"></div>
+            `;
+            
+            setTimeout(() => renderFlights(filteredFlights), 1200);
         }
 
         // Initial render on page load
-        if (data) {
-            applyFilters();
-        }
+        document.addEventListener("DOMContentLoaded", () => {
+            if (document.getElementById('sliderMin')) {
+                document.getElementById('sliderMin').innerText = formatPrice(3000);
+                document.getElementById('priceVal').innerText = formatPrice(parseInt(document.getElementById('priceRange').value));
+            }
+            if (data) {
+                applyFilters();
+            }
+        });
 
     </script>
-
+    <app-footer></app-footer>
+    <script src="components.js"></script>
 </body>
 
 </html>

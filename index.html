@@ -3,29 +3,16 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Flight Booking System</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 </head>
 
 <body>
     <div class="hero">
-        <div class="hero-top">
-            <div class="logo-container">
-                <img src="logo.jpg" alt="FlyEasy Logo">
-            </div>
-
-            <!-- Modern Nav inside Header -->
-            <nav class="main-nav">
-                <a href="index.html" class="active">Home</a>
-                <a href="booking.html">Booking</a>
-                <a href="confirmation.html">Confirmation</a>
-            </nav>
-
-            <div class="auth-links" id="authArea">
-                <a href="login.html" class="login-link">Login</a>
-                <a href="signup.html" class="signup-btn">Sign Up</a>
-            </div>
-        </div>
+        <app-header></app-header>
         <div class="hero-content">
             <h1>BOOK YOUR JOURNEY TODAY</h1>
             <p>Fast. Easy. Reliable Flight Booking.</p>
@@ -43,17 +30,21 @@
             <label><input type="radio" name="tripType" value="Round Trip"> Round Trip</label>
         </div>
 
+        <datalist id="airports">
+            <option value="Chennai (CHE)"></option>
+            <option value="Bangalore (BLR)"></option>
+            <option value="Hyderabad (HYD)"></option>
+            <option value="Mumbai (MUM)"></option>
+            <option value="Delhi (DEL)"></option>
+            <option value="Kolkata (KOL)"></option>
+            <option value="Pune (PUN)"></option>
+            <option value="Goa (GOA)"></option>
+        </datalist>
+
         <form id="searchForm">
             <div class="form-group">
                 <label>From</label>
-                <select id="fromCity">
-                    <option value="">Select Origin</option>
-                    <option>Chennai</option>
-                    <option>Bangalore</option>
-                    <option>Hyderabad</option>
-                    <option>Mumbai</option>
-                    <option>Delhi</option>
-                </select>
+                <input type="text" id="fromCity" list="airports" placeholder="Select Origin" required>
             </div>
 
             <div class="swap-btn-container">
@@ -62,14 +53,7 @@
 
             <div class="form-group">
                 <label>To</label>
-                <select id="toCity">
-                    <option value="">Select Destination</option>
-                    <option>Mumbai</option>
-                    <option>Delhi</option>
-                    <option>Bangalore</option>
-                    <option>Chennai</option>
-                    <option>Hyderabad</option>
-                </select>
+                <input type="text" id="toCity" list="airports" placeholder="Select Destination" required>
             </div>
 
             <div class="form-group">
@@ -172,7 +156,7 @@
                 </div>
                 <div class="form-group" style="flex:1;">
                     <label>Travel Date</label>
-                    <input type="date"
+                    <input type="date" id="statusDate"
                         style="width:100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; font-size:14px; box-sizing:border-box;">
                 </div>
                 <div class="search-btn-container" style="flex: 0 0 auto; margin-top:0;">
@@ -211,30 +195,21 @@
         </div>
     </div>
 
-    <footer>
-        <p>© 2026 Fly Easy</p>
-    </footer>
+    <app-footer></app-footer>
 
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+        <h2 style="color: #001B94; margin: 0;">Searching best flights...</h2>
+    </div>
+
+    <script src="components.js"></script>
     <script>
         localStorage.removeItem("searchData");
         localStorage.removeItem("bookingData");
 
-        let today = new Date().toISOString().split("T")[0];
-        document.getElementById("travelDate").min = today;
-        document.getElementById("returnDate").min = today;
-
-        let user = localStorage.getItem("loggedUser");
-
-        if (user) {
-            document.getElementById("authArea").innerHTML =
-                "<span style='color:white;font-weight:bold;margin-right:15px'>" + user + "</span>" +
-                "<button onclick='logout()' class='signup-btn'>Logout</button>";
-        }
-
-        function logout() {
-            localStorage.removeItem("loggedUser");
-            location.reload();
-        }
+        flatpickr("#travelDate", { minDate: "today", dateFormat: "Y-m-d" });
+        flatpickr("#returnDate", { minDate: "today", dateFormat: "Y-m-d" });
+        flatpickr("#statusDate", { minDate: "today", dateFormat: "Y-m-d" });
 
         // --- NEW UI LOGIC ---
 
@@ -318,17 +293,17 @@
             let flightClass = document.getElementById("flightClass").value;
 
             if (from === "" || to === "" || date === "") {
-                alert("Please fill origin, destination, and departure date fields.");
+                showToast("Please fill origin, destination, and departure date fields.", "error");
                 return;
             }
 
             if (tripType === 'Round Trip' && rDate === "") {
-                alert("Please select a return date for round trips.");
+                showToast("Please select a return date for round trips.", "error");
                 return;
             }
 
             if (from === to) {
-                alert("Origin and Destination cannot be the same.");
+                showToast("Origin and Destination cannot be the same.", "error");
                 return;
             }
 
@@ -355,7 +330,11 @@
             };
 
             localStorage.setItem("searchData", JSON.stringify(searchData));
-            window.location = "booking.html";
+
+            document.getElementById("loadingOverlay").classList.add("active");
+            setTimeout(() => {
+                window.location = "booking.html";
+            }, 1000);
         });
 
         // Tab Switching Logic
@@ -417,7 +396,7 @@
         // Flight Status Functionality
         function handleFlightStatus() {
             let flightNum = document.getElementById("flightStatusForm").querySelector("input[placeholder='e.g. AI-203']").value.trim();
-            let date = document.getElementById("flightStatusForm").querySelector("input[type='date']").value;
+            let date = document.getElementById("statusDate").value;
             let resultDiv = document.getElementById("flightStatusResult");
             let errorDiv = document.getElementById("flightStatusError");
 
